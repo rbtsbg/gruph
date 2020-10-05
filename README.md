@@ -9,7 +9,7 @@ More specifically, it probably will sit on top of [petgraph](https://github.com/
 
 A candidate query language is described by [Wang et al. (2019)](https://arxiv.org/pdf/1904.11653.pdf) but the project could also follow [tgrep2](https://web.stanford.edu/dept/linguistics/corpora/cas-tut-tgrep.html) or [Tregex](https://nlp.stanford.edu/software/tregex.html) and focus on tree-like graphs only. 
 
-Ultimately, the library shall be used for a binary CLI that allows to quickly match patterns in trees, like the latter mentioned libraries. 
+Eventually, the library shall be used for a binary CLI that allows to quickly match patterns in trees, like the latter mentioned libraries. 
 
 ## Scope 
 
