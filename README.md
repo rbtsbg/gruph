@@ -13,4 +13,4 @@ Ultimately, the library shall be used for a binary CLI that allows to quickly ma
 
 ## Scope 
 
-This is a pet project to learn the Rust programming language, which is also the main reason why Rust is chosen as programming language. If I abandon this project at some point, feel free to adopt it. If you know how to improve my code, don't hesitate to pull request. 
+This is a pet project to learn the Rust programming language, which is also the main reason why Rust is chosen as the programming language. If I abandon this project at some point, feel free to adopt it. If you know how to improve my code, don't hesitate to pull request. 
