@@ -13,3 +13,4 @@ name = "gruph-bin"
 path = "src/bin.rs"
 
 [dependencies]
+petgraph = "0.5.1"
