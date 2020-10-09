@@ -16,8 +16,9 @@ mod test {
 
     #[test]
     pub fn test_file_to_graph() {
-        let g = crate::file_to_graph::chars_to_graph("(S (NP (DET the) (DET house)))");
-        assert_eq!(g.node_count() > 0, true);
+        let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
+        let g = crate::file_to_graph::chars_to_graph(input);
+        assert_eq!(g.node_count(), 22);
     }
 
 }
@@ -31,7 +32,6 @@ mod file_to_graph {
         let mut collecting: bool = false;
         for c in line.chars() {
             if c == '(' {
-                collecting = true;
                 continue;
             } else if c == ' ' || c == ')' {
                 if !node.is_empty() {
@@ -40,18 +40,10 @@ mod file_to_graph {
                 }
                 collecting = false;
                 continue;
-            } else if collecting {
+            } else {
                 node.push(c);
             }
         }
-        // todo: collect nodes
-        // todo: add to graph
-        // todo: add edges
-
-        //        let s = res.add_node("S");
-        //        let np = res.add_node("NP");
-        //        let vp = res.add_node("VP");
-        //        res.extend_with_edges(&[(s, np), (np, vp)]);
         return res;
     }
 }
