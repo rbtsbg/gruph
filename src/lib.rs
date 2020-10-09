@@ -16,21 +16,37 @@ mod test {
 
     #[test]
     pub fn test_file_to_graph() {
-        let g = crate::file_to_graph::chars_to_graph("");
+        let g = crate::file_to_graph::chars_to_graph("(S (NP (DET the) (DET house)))");
+        assert_eq!(g.node_count() > 0, true);
     }
 
 }
 
 mod file_to_graph {
     use petgraph::graph::Graph;
-    use petgraph::graph::NodeIndex;
 
-    pub fn chars_to_graph<'a>(line: &str) -> Graph<&'a str, ()> {
-        let mut res = Graph::<&'a str, ()>::new(); // directed graph
-        let mut nodes: Vec<NodeIndex> = Vec::new(); // collect nodes here
-                                                    // todo: collect nodes
-                                                    // todo: add to graph
-                                                    // todo: add edges
+    pub fn chars_to_graph<'a>(line: &str) -> Graph<String, ()> {
+        let mut res = Graph::<String, ()>::new(); // directed graph
+        let mut node: String = String::new();
+        let mut collecting: bool = false;
+        for c in line.chars() {
+            if c == '(' {
+                collecting = true;
+                continue;
+            } else if c == ' ' || c == ')' {
+                if !node.is_empty() {
+                    res.add_node(node.clone());
+                    node = String::new();
+                }
+                collecting = false;
+                continue;
+            } else if collecting {
+                node.push(c);
+            }
+        }
+        // todo: collect nodes
+        // todo: add to graph
+        // todo: add edges
 
         //        let s = res.add_node("S");
         //        let np = res.add_node("NP");
