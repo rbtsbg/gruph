@@ -17,7 +17,7 @@ mod test {
     #[test]
     pub fn test_file_to_graph() {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
-        let g = crate::file_to_graph::chars_to_graph(input);
+        let g = crate::file_to_graph::chars_to_graph(input, &'(', &')');
         assert_eq!(g.node_count(), 22);
     }
 
@@ -26,19 +26,21 @@ mod test {
 mod file_to_graph {
     use petgraph::graph::Graph;
 
-    pub fn chars_to_graph<'a>(line: &str) -> Graph<String, ()> {
+    pub fn chars_to_graph<'a>(
+        line: &str,
+        node_seperator_start: &char,
+        node_seperator_end: &char,
+    ) -> Graph<String, ()> {
         let mut res = Graph::<String, ()>::new(); // directed graph
         let mut node: String = String::new();
-        let mut collecting: bool = false;
         for c in line.chars() {
-            if c == '(' {
+            if c == *node_seperator_start {
                 continue;
-            } else if c == ' ' || c == ')' {
+            } else if c == ' ' || c == *node_seperator_end {
                 if !node.is_empty() {
                     res.add_node(node.clone());
                     node = String::new();
                 }
-                collecting = false;
                 continue;
             } else {
                 node.push(c);
