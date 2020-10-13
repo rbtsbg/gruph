@@ -1,0 +1,4 @@
+(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))
+(ROOT (S (NP (DT The) (NN man)) (VP (VBZ eats) (NP (DT the) (NN sausage))) (. !)))
+(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))
+(ROOT (S (NP (DT The) (NN man)) (VP (VBZ eats) (NP (DT the) (NN sausage))) (. !)))

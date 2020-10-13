@@ -15,18 +15,42 @@ mod test {
     }
 
     #[test]
-    pub fn test_file_to_graph() {
+    pub fn test_line_to_graph() {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
-        let g = crate::file_to_graph::chars_to_graph(input, &'(', &')');
+        let g = crate::file_to_graph::line_to_graph(input, &'(', &')');
         assert_eq!(g.node_count(), 22);
+    }
+
+    #[test]
+    pub fn test_file_to_graph() {
+        let path: &str = "./resources/trees.txt";
+        let res = crate::file_to_graph::file_to_graph(path);
     }
 
 }
 
 mod file_to_graph {
     use petgraph::graph::Graph;
+    use std::fs::File;
+    use std::io::Error as IOE;
+    use std::io::Read;
 
-    pub fn chars_to_graph<'a>(
+    pub fn file_to_graph(path: &str) -> Result<Vec<Graph<String, ()>>, IOE> {
+        let mut res: Vec<Graph<String, ()>> = Vec::new();
+
+        let mut file = File::open(path)?;
+        let mut content = String::new();
+        file.read_to_string(&mut content)?;
+
+        for (idx, line) in content.lines().enumerate() {
+            let g = line_to_graph(&line, &'(', &')');
+            println!("line {} size: {}", idx, g.node_count());
+        }
+
+        return Ok(res);
+    }
+
+    pub fn line_to_graph(
         line: &str,
         node_seperator_start: &char,
         node_seperator_end: &char,
