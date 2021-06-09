@@ -3,8 +3,9 @@
 //! <tt>gruph </tt>provides file-to-tree readers and converters for different types of trees.
 //! Trees can then be matched against regular expressions. The regex grammar is adapted to trees.  
 
-/// File handling
+/// File handling.
 pub mod io {
+    use crate::converter::line_to_graph;
     use petgraph::graph::Graph;
     use std::fs::File;
     use std::io::Error as IOE;
@@ -20,8 +21,11 @@ pub mod io {
     /// # Examples
     ///
     /// ```
-    /// let path: str = "path/to/input/file.txt";
-    /// let graphs: Result<Vec<Graph<String, ()>>> = file_to_graph(&str);
+    /// use petgraph::graph::Graph;
+    /// use std::io::Error as IOE;
+    /// use gruph::io::file_to_graph;
+    /// let path: &str = &"path/to/input/file.txt";
+    /// let graphs: Result<Vec<Graph<String, ()>>, IOE> = file_to_graph(path);
     /// match graphs {
     ///   Ok(g) => println!("Loaded graphs."),
     ///   Err(e) => println!("Invalid path."),
@@ -37,28 +41,18 @@ pub mod io {
 
         for (idx, line) in content.lines().enumerate() {
             let g = line_to_graph(&line, &'(', &')');
-            /// Reads a graphs from a file, line by line.
-            ///
-            /// # Arguments
-            ///
-            /// * `path` - File path to the file containing the string graphs.
-            ///
-            /// # Examples
-            ///
-            /// ```
-            /// let path: str = "path/to/input/file.txt";
-            /// let graphs: Result<Vec<Graph<String, ()>>> = file_to_graph(&path);
-            /// match graphs {
-            ///   Ok(g) => println!("Loaded graphs."),
-            ///   Err(e) => println!("Invalid path."),
-            /// }
-            /// ```
             println!("line {} size: {}", idx, g.node_count());
         }
 
         return Ok(res);
     }
 
+}
+
+/// From tree and to tree converters.
+pub mod converter {
+
+    use petgraph::graph::Graph;
     pub fn line_to_graph(
         line: &str,
         node_seperator_start: &char,
@@ -102,23 +96,7 @@ mod test {
     #[test]
     pub fn test_line_conversion_to_graph() {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
-        /// Reads a graphs from a file, line by line.
-        ///
-        /// # Arguments
-        ///
-        /// * `path` - File path to the file containing the string graphs.
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// let path: str = "path/to/input/file.txt";
-        /// let graphs: Result<Vec<Graph<String, ()>>> = file_to_graph(&str);
-        /// match graphs {
-        ///   Ok(g) => println!("Loaded graphs."),
-        ///   Err(e) => println!("Invalid path."),
-        /// }
-        /// ```
-        let g = crate::file_to_graph::line_to_graph(input, &'(', &')');
+        let g = crate::converter::line_to_graph(input, &'(', &')');
         assert_eq!(g.node_count(), 22);
     }
 
@@ -126,7 +104,7 @@ mod test {
     pub fn test_file_to_graph() {
         let path: &str = "./resources/trees.txt";
         #[allow(unused_variables)]
-        let res = crate::file_to_graph::file_to_graph(path);
+        let res = crate::io::file_to_graph(path);
     }
 
 }
