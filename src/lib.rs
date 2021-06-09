@@ -4,6 +4,22 @@ mod file_to_graph {
     use std::io::Error as IOE;
     use std::io::Read;
 
+    /// Reads a graphs from a file, line by line.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - File path to the file containing the string graphs.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let path: str = "path/to/input/file.txt";
+    /// let graphs: Result<Vec<Graph<String, ()>>> = file_to_graph(&str);
+    /// match graphs {
+    ///   Ok(g) => println!("Loaded graphs."),
+    ///   Err(e) => println!("Invalid path."),
+    /// }
+    /// ```
     #[allow(dead_code)]
     pub fn file_to_graph(path: &str) -> Result<Vec<Graph<String, ()>>, IOE> {
         let res: Vec<Graph<String, ()>> = Vec::new();
