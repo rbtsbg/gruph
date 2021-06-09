@@ -1,9 +1,16 @@
-mod file_to_graph {
+//! <tt>gruph </tt>is a tree regex matcher library, heavily inspired by Tregex.
+//!
+//! <tt>gruph </tt>provides file-to-tree readers and converters for different types of trees.
+//! Trees can then be matched against regular expressions. The regex grammar is adapted to trees.  
+
+/// File handling
+pub mod io {
     use petgraph::graph::Graph;
     use std::fs::File;
     use std::io::Error as IOE;
     use std::io::Read;
 
+    #[allow(dead_code)]
     /// Reads a graphs from a file, line by line.
     ///
     /// # Arguments
@@ -20,7 +27,7 @@ mod file_to_graph {
     ///   Err(e) => println!("Invalid path."),
     /// }
     /// ```
-    #[allow(dead_code)]
+    /// This module reads graphs from file.`
     pub fn file_to_graph(path: &str) -> Result<Vec<Graph<String, ()>>, IOE> {
         let res: Vec<Graph<String, ()>> = Vec::new();
 
@@ -30,6 +37,22 @@ mod file_to_graph {
 
         for (idx, line) in content.lines().enumerate() {
             let g = line_to_graph(&line, &'(', &')');
+            /// Reads a graphs from a file, line by line.
+            ///
+            /// # Arguments
+            ///
+            /// * `path` - File path to the file containing the string graphs.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// let path: str = "path/to/input/file.txt";
+            /// let graphs: Result<Vec<Graph<String, ()>>> = file_to_graph(&path);
+            /// match graphs {
+            ///   Ok(g) => println!("Loaded graphs."),
+            ///   Err(e) => println!("Invalid path."),
+            /// }
+            /// ```
             println!("line {} size: {}", idx, g.node_count());
         }
 
@@ -79,6 +102,22 @@ mod test {
     #[test]
     pub fn test_line_conversion_to_graph() {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
+        /// Reads a graphs from a file, line by line.
+        ///
+        /// # Arguments
+        ///
+        /// * `path` - File path to the file containing the string graphs.
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// let path: str = "path/to/input/file.txt";
+        /// let graphs: Result<Vec<Graph<String, ()>>> = file_to_graph(&str);
+        /// match graphs {
+        ///   Ok(g) => println!("Loaded graphs."),
+        ///   Err(e) => println!("Invalid path."),
+        /// }
+        /// ```
         let g = crate::file_to_graph::line_to_graph(input, &'(', &')');
         assert_eq!(g.node_count(), 22);
     }
