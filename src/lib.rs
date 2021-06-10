@@ -54,7 +54,10 @@ pub mod converter {
 
     use petgraph::graph::Graph;
 
-    /// Read a line to graph.
+    /// Read a stanford formatted string to graph.  
+    /// A stanford formatted string representation of a tree uses `(`,`)` and white spaces as delimiters, e.g.
+    ///
+    /// (ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))
     ///
     pub fn stanford_string_to_graph(
         line: &str,
