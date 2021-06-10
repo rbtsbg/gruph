@@ -5,7 +5,7 @@
 
 /// File handling.
 pub mod io {
-    use crate::converter::string_to_graph;
+    use crate::converter::stanford_string_to_graph;
     use petgraph::graph::Graph;
     use std::fs::File;
     use std::io::Error as IOE;
@@ -40,7 +40,7 @@ pub mod io {
         file.read_to_string(&mut content)?;
 
         for (idx, line) in content.lines().enumerate() {
-            let g = string_to_graph(&line, &'(', &')');
+            let g = stanford_string_to_graph(&line, &'(', &')');
             println!("line {} size: {}", idx, g.node_count());
         }
 
@@ -56,19 +56,21 @@ pub mod converter {
 
     /// Read a line to graph.
     ///
-    pub fn string_to_graph(
+    pub fn stanford_string_to_graph(
         line: &str,
         node_seperator_start: &char,
         node_seperator_end: &char,
     ) -> Graph<String, ()> {
         let mut res = Graph::<String, ()>::new(); // directed graph
         let mut node: String = String::new();
+        let mut stack: Vec<String> = Vec::new();
         for c in line.chars() {
             if c == *node_seperator_start {
                 continue;
             } else if c == ' ' || c == *node_seperator_end {
                 if !node.is_empty() {
                     res.add_node(node.clone());
+                    stack.push(node.clone());
                     node = String::new();
                 }
                 continue;
@@ -99,7 +101,7 @@ mod test {
     #[test]
     pub fn test_line_conversion_to_graph() {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
-        let g = crate::converter::string_to_graph(input, &'(', &')');
+        let g = crate::converter::stanford_string_to_graph(input, &'(', &')');
         assert_eq!(g.node_count(), 22);
     }
 
