@@ -185,8 +185,8 @@ mod test {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
         let indices = get_next_node_label_indices(&input, 0, &'(', &')');
         match indices {
-            Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
-            Err(_) => assert_eq!(true, false),
+            Ok((i1, i2)) => assert_eq!((i1, i2), (1, 3)),
+            Err(_) => panic!(),
         }
     }
 
