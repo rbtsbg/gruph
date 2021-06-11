@@ -72,34 +72,15 @@ pub mod converter {
         node_separator_start: &char,
         node_separator_end: &char,
     ) -> Result<(usize, usize), &'static str> {
-        let mut node_label_start: usize = usize::MAX;
-        let mut node_label_end: usize = usize::MIN;
-        for (i, c) in tree_in.chars().enumerate() {
-            if i < index_start_search || c == *node_separator_start {
-                continue;
-            } else if c == *node_separator_end || c == ' ' {
-                if node_label_start != usize::MAX {
-                    node_label_end = (i - 1).into();
-                    break;
-                } else {
-                    continue;
-                }
-            } else {
-                if node_label_start != usize::MAX {
-                    continue;
-                } else {
-                    node_label_start = i;
-                }
-            }
-        }
-        if node_label_start != usize::MAX {
-            if node_label_end >= node_label_start {
-                return Ok((node_label_start, node_label_end));
-            } else {
-                return Err("String not formatted correctly.");
-            }
-        } else {
-            return Err("String not formatted correctly.");
+        let index_node_label_start: Option<usize> =
+            tree_in[index_start_search..].find(char::is_alphabetic); // Works
+        let index_node_label_end = match index_node_label_start {
+            Some(u) => tree_in[u..].find(&['(', ')', ' '][..]),
+            None => None,
+        };
+        match (index_node_label_start, index_node_label_end) {
+            (Some(start), Some(end)) => return Ok((start, end)),
+            _ => Err("Malformatted string."),
         }
     }
 
@@ -185,7 +166,7 @@ mod test {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
         let indices = get_next_node_label_indices(&input, 0, &'(', &')');
         match indices {
-            Ok((i1, i2)) => assert_eq!((i1, i2), (1, 3)),
+            Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
             Err(_) => panic!(),
         }
     }
