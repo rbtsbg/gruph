@@ -75,7 +75,7 @@ pub mod converter {
         let index_node_label_start: Option<usize> =
             tree_in[index_start_search..].find(char::is_alphabetic); // Works
         let index_node_label_end = match index_node_label_start {
-            Some(u) => tree_in[u..].find(&['(', ')', ' '][..]),
+            Some(u) => tree_in[u..].find(&[*node_separator_start, *node_separator_end, ' '][..]),
             None => None,
         };
         match (index_node_label_start, index_node_label_end) {
