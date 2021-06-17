@@ -4,8 +4,8 @@
 //! Trees can then be matched against regular expressions. The regex grammar is adapted to trees.  
 
 /// File handling.
+#[allow(unused_imports)]
 pub mod io {
-    //use crate::converter::stanford_string_to_graph;
     use petgraph::graph::Graph;
     use std::fs::File;
     use std::io::Error as IOE;
@@ -50,11 +50,15 @@ pub mod io {
 }
 
 /// From tree and to tree converters.
+#[allow(unused_imports)]
 pub mod converter {
 
     use petgraph::graph::Graph;
     use petgraph::graph::NodeIndex;
+    use std::collections::HashSet;
     use std::usize;
+
+    //static alphabet: [char; 26] = [('a'..='z').collect::Vec<char>()];
 
     /// Gets the indices of the next node label in a stanford formatted string.
     ///
@@ -72,6 +76,13 @@ pub mod converter {
         node_separator_start: &char,
         node_separator_end: &char,
     ) -> Result<(usize, usize), &'static str> {
+        // https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0e33616e0daaff83e86e28623a63175b
+        let alphabetic = ('a'..='z').collect::<HashSet<char>>();
+        let separators = [*node_separator_start, *node_separator_end]
+            .iter()
+            .cloned()
+            .collect::<HashSet<char>>();
+        let non_separators = alphabetic.difference(&separators);
         let index_node_label_start: Option<usize> =
             tree_in[index_start_search..].find(char::is_alphabetic); // Works
         let index_node_label_end = match index_node_label_start {
@@ -145,6 +156,7 @@ pub mod converter {
 }
 
 #[cfg(test)]
+#[allow(unused_imports)]
 mod test {
     use crate::converter::get_next_node_label_indices;
     use petgraph::algo::dijkstra;
