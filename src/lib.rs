@@ -46,7 +46,6 @@ pub mod io {
     //
     //        return Ok(res);
     //    }
-
 }
 
 /// From tree and to tree converters.
@@ -76,84 +75,96 @@ pub mod converter {
         node_separator_start: &char,
         node_separator_end: &char,
     ) -> Result<(usize, usize), &'static str> {
-        // https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0e33616e0daaff83e86e28623a63175b
-        let alphabetic = ('a'..='z').collect::<HashSet<char>>();
-        let separators = [*node_separator_start, *node_separator_end]
-            .iter()
-            .cloned()
-            .collect::<HashSet<char>>();
-        let non_separators = alphabetic.difference(&separators);
-        let index_node_label_start: Option<usize> =
-            tree_in[index_start_search..].find(char::is_alphabetic); // Works
-        let index_node_label_end = match index_node_label_start {
-            Some(u) => tree_in[u..].find(&[*node_separator_start, *node_separator_end, ' '][..]),
-            None => None,
-        };
-        match (index_node_label_start, index_node_label_end) {
-            (Some(start), Some(end)) => return Ok((start, end)),
-            _ => Err("Malformatted string."),
-        }
+        let separators = [*node_separator_start, *node_separator_end];
+        let index_first_alphabetic = tree_in
+            .chars()
+            .position(|c| !separators.contains(&c))
+            .unwrap();
+        let index_next_separator = tree_in[index_first_alphabetic..]
+            .chars()
+            .position(|c| separators.contains(&c))
+            .unwrap();
+        return Ok((index_first_alphabetic, index_next_separator - 1));
     }
 
-    //    /// Read a stanford formatted string to graph.
-    //    /// A stanford formatted string representation of a tree uses `(`,`)` and white spaces as delimiters, e.g.
-    //    ///
-    //    /// (ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))
-    //    /// R -> S -> N -> P -> M
-    //
-    //        fn read_tree(
-    //            tree_in: &str,
-    //            tree_out: Graph<String, ()>,
-    //            node_separator_start: &char,
-    //            node_separator_end: &char,
-    //        ) -> Option<NodeIndex> {
-    //            let mut res_index: Option<NodeIndex> = None;
-    //            for (i, c) in tree_in.chars().enumerate() {
-    //                if c == *node_separator_start {
-    //                    match res_index {
-    //                        Some(idx) => {
-    //                            read_tree(&tree_in[i..], node_separator_start, node_separator_end);
-    //                        }
-    //                        None => {}
-    //                    }
-    //                }
-    //            }
-    //            return res_index;
+    // https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0e33616e0daaff83e86e28623a63175b
+    //let alphabetic = ('a'..='z').collect::<HashSet<char>>();
+    //let separators = [*node_separator_start, *node_separator_end]
+    //    .iter()
+    //    .cloned()
+    //    .collect::<HashSet<char>>();
+    //let non_separators = alphabetic.difference(&separators);
+    //        let index_node_label_start: Option<usize> =
+    //            tree_in[index_start_search..].find(char::is_alphabetic); // Works
+    //        let index_node_label_end = match index_node_label_start {
+    //            Some(u) => tree_in[u..].find(&[*node_separator_start, *node_separator_end, ' '][..]),
+    //            None => None,
+    //        };
+    //        match (index_node_label_start, index_node_label_end) {
+    //            (Some(start), Some(end)) => return Ok((start, end)),
+    //            _ => Err("Malformatted string."),
     //        }
-
-    //    pub fn stanford_string_to_graph(
-    //        line: &str,
-    //        node_seperator_start: &char,
-    //        node_seperator_end: &char,
-    //    ) -> Graph<String, ()> {
-    //        let mut res = Graph::<String, ()>::new(); // directed graph
-    //        let mut node: String = String::new();
-    //        let mut stack: Vec<NodeIndex> = Vec::new();
-    //        let mut is_leaf: bool = false;
-    //        for c in line.chars() {
-    //            if c == *node_seperator_start {
-    //                continue;
-    //            } else if c == ' ' {
-    //                if !node.is_empty() {
-    //                    let node_index = res.add_node(node.clone());
-    //                    stack.push(node_index);
-    //                    // add edge
-    //                    node = String::new();
-    //                }
-    //                continue;
-    //            } else if c == *node_seperator_end {/
-    //                if !node.is_empty() {
-    //                    let node_index = res.add_node(node.clone());
-    //                    stack.push(node_index);
-    //                    node = String::new();
-    //                }
-    //            } else {
-    //                node.push(c);
-    //            }
-    //        }
-    //        return res;
-    //    }
 }
+
+//    /// Read a stanford formatted string to graph.
+//    /// A stanford formatted string representation of a tree uses `(`,`)` and white spaces as delimiters, e.g.
+//    ///
+//    /// (ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))
+//    /// R -> S -> N -> P -> M
+//
+//        fn read_tree(
+//            tree_in: &str,
+//            tree_out: Graph<String, ()>,
+//            node_separator_start: &char,
+//            node_separator_end: &char,
+//        ) -> Option<NodeIndex> {
+//            let mut res_index: Option<NodeIndex> = None;
+//            for (i, c) in tree_in.chars().enumerate() {
+//                if c == *node_separator_start {
+//                    match res_index {
+//                        Some(idx) => {
+//                            read_tree(&tree_in[i..], node_separator_start, node_separator_end);
+//                        }
+//                        None => {}
+//                    }
+//                }
+//            }
+//            return res_index;
+//        }
+
+//    pub fn stanford_string_to_graph(
+//        line: &str,
+//        node_seperator_start: &char,
+//        node_seperator_end: &char,
+//    ) -> Graph<String, ()> {
+//        let mut res = Graph::<String, ()>::new(); // directed graph
+//        let mut node: String = String::new();
+//        let mut stack: Vec<NodeIndex> = Vec::new();
+//        let mut is_leaf: bool = false;
+//        for c in line.chars() {
+//            if c == *node_seperator_start {
+//                continue;
+//            } else if c == ' ' {
+//                if !node.is_empty() {
+//                    let node_index = res.add_node(node.clone());
+//                    stack.push(node_index);
+//                    // add edge
+//                    node = String::new();
+//                }
+//                continue;
+//            } else if c == *node_seperator_end {/
+//                if !node.is_empty() {
+//                    let node_index = res.add_node(node.clone());
+//                    stack.push(node_index);
+//                    node = String::new();
+//                }
+//            } else {
+//                node.push(c);
+//            }
+//        }
+//        return res;
+//    }
+//}
 
 #[cfg(test)]
 #[allow(unused_imports)]
@@ -182,7 +193,6 @@ mod test {
             Err(_) => panic!(),
         }
     }
-
 }
 
 //    #[test]
