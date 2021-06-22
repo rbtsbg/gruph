@@ -62,6 +62,7 @@ pub mod converter {
     /// Gets the indices of the next node label in a stanford formatted string.
     ///
     /// Assumes that the node is properly closed, i.e. ends in node separator or white space.
+    /// Otherwise will panic. 
     ///
     /// #Arguments
     ///
@@ -76,7 +77,7 @@ pub mod converter {
         node_separator_end: &char,
     ) -> Result<(usize, usize), &'static str> {
         let separators = [*node_separator_start, *node_separator_end];
-        let index_first_alphabetic = tree_in
+        let index_first_alphabetic = tree_in[index_start_search..]
             .chars()
             .position(|c| !separators.contains(&c))
             .unwrap();
