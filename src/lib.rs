@@ -88,6 +88,47 @@ pub mod converter {
         return Ok((index_first_alphabetic, index_next_separator - 1));
     }
 
+    pub fn build_tree(
+        tree_in: &str, 
+        node_separator_start: &char, 
+        node_separator_end: &char, 
+        ) -> Result<Graph<String, ()>, &'static str>{
+        let mut res = Graph::<String, ()>::new(); // directed graph
+        let mut indices_nodes: Vec<NodeIndex> = Vec::new();
+        let mut index_char: usize = 0; 
+        let chars: Vec<char> = tree_in.chars().collect();
+        while index_char < tree_in.len(){
+            let ch = chars[index_char]; 
+            if ch == *node_separator_start {
+                let (node_index_start, node_index_end) = get_next_node_label_indices(
+                    tree_in,
+                    index_char,
+                    node_separator_start,
+                    node_separator_end)?;
+                let mut node_label: String = String::new(); 
+                for i in node_index_start..node_index_end{
+                    node_label.push(chars[i]);
+                } 
+                indices_nodes.push(res.add_node(node_label.clone()));
+                index_char = node_index_end + 1;
+                // copy from tree_in to string jkk
+            }
+            else if ch == *node_separator_end{
+                let target_node = indices_nodes.pop().unwrap();
+                let source_node = indices_nodes.last().unwrap().clone();
+                res.add_edge(source_node, target_node, ());
+                index_char = index_char + 1; 
+            }
+            else {
+                println!("Should not encounter {}", ch);
+                Err("Malformed String")
+                return Err("Malfomatted string.")
+            }
+        }
+        return Ok(res);
+    }
+
+
     // https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0e33616e0daaff83e86e28623a63175b
     //let alphabetic = ('a'..='z').collect::<HashSet<char>>();
     //let separators = [*node_separator_start, *node_separator_end]
@@ -105,12 +146,13 @@ pub mod converter {
     //            (Some(start), Some(end)) => return Ok((start, end)),
     //            _ => Err("Malformatted string."),
     //        }
-}
+//})
 
 //    /// Read a stanford formatted string to graph.
 //    /// A stanford formatted string representation of a tree uses `(`,`)` and white spaces as delimiters, e.g.
 //    ///
-//    /// (ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))
+//    /// (ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB al)so)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))
+//
 //    /// R -> S -> N -> P -> M
 //
 //        fn read_tree(
@@ -142,14 +184,14 @@ pub mod converter {
 //        let mut node: String = String::new();
 //        let mut stack: Vec<NodeIndex> = Vec::new();
 //        let mut is_leaf: bool = false;
-//        for c in line.chars() {
+//        for c in line.chars() {)
 //            if c == *node_seperator_start {
 //                continue;
-//            } else if c == ' ' {
+//            } else if c == ' ' {)
 //                if !node.is_empty() {
 //                    let node_index = res.add_node(node.clone());
 //                    stack.push(node_index);
-//                    // add edge
+//                    // add edge)
 //                    node = String::new();
 //                }
 //                continue;
@@ -157,7 +199,7 @@ pub mod converter {
 //                if !node.is_empty() {
 //                    let node_index = res.add_node(node.clone());
 //                    stack.push(node_index);
-//                    node = String::new();
+//                    node = String::new();)
 //                }
 //            } else {
 //                node.push(c);
@@ -170,7 +212,7 @@ pub mod converter {
 #[cfg(test)]
 #[allow(unused_imports)]
 mod test {
-    use crate::converter::get_next_node_label_indices;
+    use crate::converter::{get_next_node_label_indices, build_tree};
     use petgraph::algo::dijkstra;
     use petgraph::graph::{NodeIndex, UnGraph};
 
@@ -194,6 +236,16 @@ mod test {
             Err(_) => panic!(),
         }
     }
+    
+    #[test]
+    pub fn test_tree_build() {
+        let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
+        let graph = build_tree(&input, &'(', &')'); 
+        match graph {
+            Ok(g) => println!("tree generated"),
+            Err(_) => panic!(),
+        }
+    }
 }
 
 //    #[test]
@@ -211,6 +263,6 @@ mod test {
 //    }
 //}
 
-pub fn hello() {
-    println!("Hello, world!");
 }
+
+
