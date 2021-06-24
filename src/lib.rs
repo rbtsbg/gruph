@@ -77,7 +77,7 @@ pub mod converter {
         node_separator_start: &char,
         node_separator_end: &char,
     ) -> Result<(usize, usize), &'static str> {
-        let separators = [*node_separator_start, *node_separator_end, ' '];
+        let separators = [*node_separator_start, *node_separator_end, ' ']; // fixme: whitespace hard coded
         let index_first_alphabetic = tree_in[index_start_search..]
             .chars()
             .position(|c| !separators.contains(&c))
