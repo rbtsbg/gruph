@@ -70,22 +70,24 @@ pub mod converter {
     /// * `index_start_search` - The start index from where to search the tree for the next node label.
     /// * `node_separator_start` - The node start separator character.
     /// * `node_separator_end` - The node end separator character.  
+    /// let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
     pub fn get_next_node_label_indices(
         tree_in: &str,
         index_start_search: usize,
         node_separator_start: &char,
         node_separator_end: &char,
     ) -> Result<(usize, usize), &'static str> {
-        let separators = [*node_separator_start, *node_separator_end];
+        let separators = [*node_separator_start, *node_separator_end, ' '];
         let index_first_alphabetic = tree_in[index_start_search..]
             .chars()
             .position(|c| !separators.contains(&c))
             .unwrap();
-        let index_next_separator = tree_in[index_first_alphabetic..]
+        let index_next_separator = tree_in[index_start_search + index_first_alphabetic..]
             .chars()
             .position(|c| separators.contains(&c))
             .unwrap();
-        return Ok((index_first_alphabetic, index_next_separator - 1));
+        return Ok((index_first_alphabetic + index_start_search, 
+                   index_next_separator  + index_start_search));
     }
 
     pub fn build_tree(
@@ -105,23 +107,33 @@ pub mod converter {
                     index_char,
                     node_separator_start,
                     node_separator_end)?;
+                //println!("{}, {}", node_index_start, node_index_end);
                 let mut node_label: String = String::new(); 
-                for i in node_index_start..node_index_end{
+                for i in node_index_start..=node_index_end{
                     node_label.push(chars[i]);
                 } 
                 indices_nodes.push(res.add_node(node_label.clone()));
+                println!("{}", node_label);
                 index_char = node_index_end + 1;
+                //println!("index char: {}", index_char);
                 // copy from tree_in to string jkk
             }
             else if ch == *node_separator_end{
-                let target_node = indices_nodes.pop().unwrap();
-                let source_node = indices_nodes.last().unwrap().clone();
-                res.add_edge(source_node, target_node, ());
-                index_char = index_char + 1; 
+                if indices_nodes.len() > 1 {
+                    let target_node = indices_nodes.pop().unwrap();
+                    let source_node = indices_nodes.last().unwrap().clone(); // panicked 
+                    res.add_edge(source_node, target_node, ());
+                    index_char = index_char + 1; 
+                    //println!("index char end {}", index_char);
+                } else {
+                    return Ok(res)
+                }
+            }
+            else if ch.is_whitespace(){
+                continue;
             }
             else {
                 println!("Should not encounter {}", ch);
-                Err("Malformed String")
                 return Err("Malfomatted string.")
             }
         }
@@ -135,7 +147,7 @@ pub mod converter {
     //    .iter()
     //    .cloned()
     //    .collect::<HashSet<char>>();
-    //let non_separators = alphabetic.difference(&separators);
+    //let non_separators = alphabetic.difference(&separators);}
     //        let index_node_label_start: Option<usize> =
     //            tree_in[index_start_search..].find(char::is_alphabetic); // Works
     //        let index_node_label_end = match index_node_label_start {
@@ -242,7 +254,7 @@ mod test {
         let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
         let graph = build_tree(&input, &'(', &')'); 
         match graph {
-            Ok(g) => println!("tree generated"),
+            Ok(_g) => println!("tree generated"),
             Err(_) => panic!(),
         }
     }
@@ -263,6 +275,5 @@ mod test {
 //    }
 //}
 
+
 }
-
-
