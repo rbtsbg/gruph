@@ -178,6 +178,10 @@ pub mod converter {
             let input_prettified: String = prettify_stanford_string(&input).into_iter().collect();
             let separators = ['(', ')', ' '];
             let indices = get_next_node_label_indices(&input, 0, &separators);
+            match indices {
+                Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
+                Err(_) => panic!(),
+            }
             let indices = get_next_node_label_indices(&input_prettified, 0, &separators);
             match indices {
                 Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
