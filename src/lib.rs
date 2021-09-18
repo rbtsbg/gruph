@@ -74,10 +74,11 @@ pub mod converter {
     pub fn get_next_node_label_indices(
         tree_in: &str,
         index_start_search: usize,
-        node_separator_start: &char,
-        node_separator_end: &char,
+        //node_separator_start: &char,
+        //node_separator_end: &char,
+        separators: &[char], 
     ) -> Result<(usize, usize), &'static str> {
-        let separators = [*node_separator_start, *node_separator_end, ' ']; // fixme: whitespace hard coded
+        //let separators = [*node_separator_start, *node_separator_end, ' ']; // fixme: whitespace hard coded
         let index_first_alphabetic = tree_in[index_start_search..]
             .chars()
             .position(|c| !separators.contains(&c))
@@ -99,14 +100,16 @@ pub mod converter {
         let mut indices_nodes: Vec<NodeIndex> = Vec::new();
         let mut index_char: usize = 0; 
         let chars: Vec<char> = tree_in.chars().collect();
+        let separators = [*node_separator_start, *node_separator_end, ' '];
         while index_char < tree_in.len(){
             let ch = chars[index_char]; 
             if ch == *node_separator_start {
                 let (node_index_start, node_index_end) = get_next_node_label_indices(
                     tree_in,
                     index_char,
-                    node_separator_start,
-                    node_separator_end)?;
+                    &separators)?; 
+//                    node_separator_start,
+//                    node_separator_end)?;
                 //println!("{}, {}", node_index_start, node_index_end);
                 let mut node_label: String = String::new(); 
                 for i in node_index_start..=node_index_end{
@@ -242,7 +245,8 @@ mod test {
     #[test]
     pub fn test_node_label_indices_correct() {
         let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
-        let indices = get_next_node_label_indices(&input, 0, &'(', &')');
+        let separators = ['(', ')', ' '];
+        let indices = get_next_node_label_indices(&input, 0, &separators);
         match indices {
             Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
             Err(_) => panic!(),
@@ -250,7 +254,7 @@ mod test {
     }
     
     #[test]
-    pub fn test_tree_build() {
+    pub fn test_build_tree() {
         let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
         let graph = build_tree(&input, &'(', &')'); 
         match graph {
