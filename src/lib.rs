@@ -116,7 +116,7 @@ pub mod converter {
                     node_label.push(chars[i]);
                 } 
                 indices_nodes.push(res.add_node(node_label.clone()));
-                println!("{}", node_label);
+                //println!("{}", node_label);
                 index_char = node_index_end + 1;
                 //println!("index char: {}", index_char);
                 // copy from tree_in to string jkk
@@ -142,8 +142,57 @@ pub mod converter {
         }
         return Ok(res);
     }
+        
 
+   // let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
+    fn prettify_stanford_string(tree_in: &str) -> Vec<char>{
+        let chars: Vec<char> = tree_in.chars().collect();
+        let mut result: Vec<char> = Vec::new();
+        let mut collecting: bool = false; 
 
+        for c in chars{
+            // possible leaf
+            if c == ' ' {
+                result.push(c);
+                collecting = true; 
+                continue;
+            }
+            if !collecting {
+                result.push(c);
+                continue;
+            }
+            if collecting {
+                // not a leaf            
+                if c == '(' {
+                    collecting = false; 
+                    result.push(c);
+                    continue;
+                }
+                     
+                // a leaf 
+                if c != ')' && *result.last().unwrap() == ' '{
+                  result.push('('); 
+                  result.push(c);
+                  continue;
+                }
+                else if c != ')'{
+                    result.push(c);
+                    continue;
+                }
+                if c == ')'{
+                    collecting = false; 
+                    result.push(c);
+                    result.push(c);
+                    continue;
+                }
+                else {
+                    panic!("undefined case: {}", c);
+                }
+            }
+        } 
+        return result;
+    }
+    
     // https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0e33616e0daaff83e86e28623a63175b
     //let alphabetic = ('a'..='z').collect::<HashSet<char>>();
     //let separators = [*node_separator_start, *node_separator_end]
@@ -227,7 +276,7 @@ pub mod converter {
 #[cfg(test)]
 #[allow(unused_imports)]
 mod test {
-    use crate::converter::{get_next_node_label_indices, build_tree};
+    use crate::converter::{get_next_node_label_indices, build_tree, prettify_stanford_string};
     use petgraph::algo::dijkstra;
     use petgraph::graph::{NodeIndex, UnGraph};
 
@@ -261,6 +310,27 @@ mod test {
             Ok(_g) => println!("tree generated"),
             Err(_) => panic!(),
         }
+    }
+    
+    #[test]
+    pub fn test_build_original_tree() {
+        //let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
+        let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
+        let graph = build_tree(&input, &'(', &')'); 
+        match graph {
+            Ok(_g) => println!("tree generated"),
+            Err(_) => panic!(),
+        }
+    }
+  
+    #[test]
+    pub fn test_prettify_stanford_tree(){
+        let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
+        let expected = "(ROOT (S (NP (PRP$ (My)) (NN (dog))) (ADVP (RB (also))) (VP (VBZ (likes)) (S (VP (VBG (eating)) (NP (NN (sausage)))))) (. (.))))";
+        let output: String = prettify_stanford_string(&input).into_iter().collect();
+        assert_eq!(
+            expected, output
+            );
     }
 }
 
