@@ -7,7 +7,7 @@ mod process;
 
 /// From tree and to tree converters.
 #[allow(unused_imports)]
-pub mod converter {
+pub mod stanford {
 
     use petgraph::graph::Graph;
     use petgraph::graph::NodeIndex;
@@ -73,7 +73,8 @@ pub mod converter {
     #[cfg(test)]
     #[allow(unused_imports)]
     mod test {
-        use crate::converter::{build_tree, get_next_node_label_indices, prettify_stanford_string};
+        use crate::stanford::{prettify_stanford_string};
+        use crate::process::graph::{build_tree, get_next_node_label_indices}; 
         use petgraph::algo::dijkstra;
         use petgraph::graph::{NodeIndex, UnGraph};
 
@@ -88,22 +89,6 @@ pub mod converter {
             assert_eq!(&1i32, node_map.get(&NodeIndex::new(4)).unwrap());
         }
 
-        #[test]
-        pub fn test_node_label_indices_correct() {
-            let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
-            let input_prettified: String = prettify_stanford_string(&input).into_iter().collect();
-            let separators = ['(', ')', ' '];
-            let indices = get_next_node_label_indices(&input, 0, &separators);
-            match indices {
-                Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
-                Err(_) => panic!(),
-            }
-            let indices = get_next_node_label_indices(&input_prettified, 0, &separators);
-            match indices {
-                Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
-                Err(_) => panic!(),
-            }
-        }
 
         #[test]
         pub fn test_build_tree() {

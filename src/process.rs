@@ -85,5 +85,39 @@ pub mod graph {
         return Ok(res);
     }
 
+    #[cfg(test)]
+    #[allow(unused_imports)]
+    mod test{
+        use crate::process::graph::*;
+        
+        #[test]
+        pub fn test_build_tree() {
+            let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
+            let graph = build_tree(&input, &'(', &')');
+            match graph {
+                Ok(_g) => println!("tree generated"), // todo test something meaningful
+                Err(_) => panic!(),
+            }
+        }
+        
+        #[test]
+        pub fn test_node_label_indices_correct() {
+            let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
+            let separators = ['(', ')', ' '];
+            let indices = get_next_node_label_indices(&input, 0, &separators);
+            match indices {
+                Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
+                Err(_) => panic!(),
+            }
+            let indices = get_next_node_label_indices(&input, 0, &separators);
+            match indices {
+                Ok((i1, i2)) => assert_eq!((i1, i2), (1, 4)),
+                Err(_) => panic!(),
+            }
+        }
+        
+        
+    }
+
     
 }
