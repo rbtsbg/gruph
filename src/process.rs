@@ -1,4 +1,4 @@
-pub mod graph {
+pub mod text {
     
     use std::usize;
     use petgraph::graph::Graph;
@@ -88,7 +88,7 @@ pub mod graph {
     #[cfg(test)]
     #[allow(unused_imports)]
     mod test{
-        use crate::process::graph::*;
+        use crate::process::text::*;
         
         #[test]
         pub fn test_build_tree() {

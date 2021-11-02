@@ -14,7 +14,7 @@ pub mod stanford {
     use std::collections::HashSet;
     use std::usize;
 
-    use crate::process::graph::{get_next_node_label_indices, build_tree};
+    use crate::process::text::{get_next_node_label_indices, build_tree};
 
     /// Prettifies a stanford string representation of a syntax tree, i.e. removes white spaces,
     /// encloses leaves in brackets.
@@ -74,7 +74,7 @@ pub mod stanford {
     #[allow(unused_imports)]
     mod test {
         use crate::stanford::{prettify_stanford_string};
-        use crate::process::graph::{build_tree, get_next_node_label_indices}; 
+        use crate::process::text::{build_tree, get_next_node_label_indices}; 
         use petgraph::algo::dijkstra;
         use petgraph::graph::{NodeIndex, UnGraph};
 
