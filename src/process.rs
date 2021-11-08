@@ -85,10 +85,6 @@ pub mod text {
         return Ok(res);
     }
 
-    #[cfg(test)]
-    #[allow(unused_imports)]
-    mod test{
-        use crate::process::text::*;
         
         #[test]
         pub fn test_build_tree() {
@@ -117,7 +113,6 @@ pub mod text {
         }
         
         
-    }
 
     
 }

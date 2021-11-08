@@ -69,57 +69,44 @@ pub mod stanford {
         result.retain(|&c| c != ' ');
         return result;
     }
-
-    #[cfg(test)]
-    #[allow(unused_imports)]
-    mod test {
-        use crate::stanford::{prettify_stanford_string};
-        use crate::process::text::{build_tree, get_next_node_label_indices}; 
-        use petgraph::algo::dijkstra;
-        use petgraph::graph::{NodeIndex, UnGraph};
-
-        // test the dependency.
-        #[test]
-        pub fn test_ungraph_is_created_from_scratch() {
-            // Create an undirected graph with `i32` nodes and edges with `()` associated data.
-            let g = UnGraph::<i32, ()>::from_edges(&[(1, 2), (2, 3), (3, 4), (1, 4)]);
-
-            // Find the shortest path from `1` to `4` using `1` as the cost for every edge.
-            let node_map = dijkstra(&g, 1.into(), Some(4.into()), |_| 1);
-            assert_eq!(&1i32, node_map.get(&NodeIndex::new(4)).unwrap());
-        }
-
-
-        #[test]
-        pub fn test_build_tree() {
-            let input = "(ROOT(S(NP(PRP)(NN))(ADVP(RB))(VP(VBZ)(S(VP(VBG)(NP(NN)))))))";
-            let graph = build_tree(&input, &'(', &')');
-            match graph {
-                Ok(_g) => println!("tree generated"), // todo test something meaningful
-                Err(_) => panic!(),
+    
+    #[test]
+    pub fn test_build_stanford_tree() {
+        let mut input: String = String::from("(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))");
+        input = prettify_stanford_string(&input).into_iter().collect();
+        let graph = build_tree(&input, &'(', &')');
+        match graph {
+            Ok(g) => {
+                println!("tree generated");
+                assert_eq!(g.node_count(), 22);
             }
-        }
-
-        #[test]
-        pub fn test_build_original_tree() {
-            let mut input: String = String::from("(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))");
-            input = prettify_stanford_string(&input).into_iter().collect();
-            let graph = build_tree(&input, &'(', &')');
-            match graph {
-                Ok(g) => {
-                    println!("tree generated");
-                    assert_eq!(g.node_count(), 22);
-                }
-                Err(_) => panic!(),
-            }
-        }
-
-        #[test]
-        pub fn test_prettify_stanford_tree() {
-            let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
-            let expected = "(ROOT(S(NP(PRP$(My))(NN(dog)))(ADVP(RB(also)))(VP(VBZ(likes))(S(VP(VBG(eating))(NP(NN(sausage))))))(.(.))))";
-            let output: String = prettify_stanford_string(&input).into_iter().collect();
-            assert_eq!(expected, output);
+            Err(_) => panic!(),
         }
     }
+
+    #[test]
+    pub fn test_prettify_stanford_tree() {
+        let input = "(ROOT (S (NP (PRP$ My) (NN dog)) (ADVP (RB also)) (VP (VBZ likes) (S (VP (VBG eating) (NP (NN sausage))))) (. .)))";
+        let expected = "(ROOT(S(NP(PRP$(My))(NN(dog)))(ADVP(RB(also)))(VP(VBZ(likes))(S(VP(VBG(eating))(NP(NN(sausage))))))(.(.))))";
+        let output: String = prettify_stanford_string(&input).into_iter().collect();
+        assert_eq!(expected, output);
+    }
+} 
+#[cfg(test)]
+#[allow(unused_imports)]
+mod test {
+    use petgraph::algo::dijkstra;
+    use petgraph::graph::{NodeIndex, UnGraph};
+
+    // test the dependency.
+    #[test]
+    pub fn test_ungraph_is_created_from_scratch() {
+        // Create an undirected graph with `i32` nodes and edges with `()` associated data.
+        let g = UnGraph::<i32, ()>::from_edges(&[(1, 2), (2, 3), (3, 4), (1, 4)]);
+
+        // Find the shortest path from `1` to `4` using `1` as the cost for every edge.
+        let node_map = dijkstra(&g, 1.into(), Some(4.into()), |_| 1);
+        assert_eq!(&1i32, node_map.get(&NodeIndex::new(4)).unwrap());
+    }
 }
+
