@@ -3,6 +3,7 @@
 //! <tt>gruph </tt>provides file-to-tree readers and converters for different types of trees.
 //! Trees can then be matched against regular expressions. The regex grammar is adapted to trees.  
 mod process;
+mod query;
 
 
 /// From tree and to tree converters.
