@@ -13,4 +13,5 @@ name = "gruph-bin"
 path = "src/bin.rs"
 
 [dependencies]
+delegate = "0.6.1"
 petgraph = "0.6.0"
