@@ -59,23 +59,6 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
-        }, 
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug main",
-            "cargo": {
-                "args": [
-                    "run", 
-                    "./resources/trees.txt"
-                ],
-                "filter": {
-                    "name": "gruph-bin",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
         }
     ]
 }
