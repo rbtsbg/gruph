@@ -25,7 +25,7 @@ pub mod stanford {
     /// * tree_in - The tree to prettify.
     ///
     #[allow(dead_code)]
-    fn prettify_stanford_string(tree_in: &str) -> Vec<char> {
+    pub fn prettify_stanford_string(tree_in: &str) -> Vec<char> {
         let chars: Vec<char> = tree_in.chars().collect();
         let mut result: Vec<char> = Vec::new();
         let mut collecting: bool = false;
