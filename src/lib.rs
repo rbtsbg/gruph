@@ -4,6 +4,7 @@
 //! Trees can then be matched against regular expressions. The regex grammar is adapted to trees.  
 mod process;
 mod query;
+mod io_tests;
 
 
 /// From tree and to tree converters.
