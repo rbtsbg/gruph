@@ -1,0 +1,81 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'gruph'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=gruph"
+                ],
+                "filter": {
+                    "name": "gruph",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'gruph-bin'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=gruph-bin",
+                    "--package=gruph"
+                ],
+                "filter": {
+                    "name": "gruph-bin",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'gruph-bin'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=gruph-bin",
+                    "--package=gruph"
+                ],
+                "filter": {
+                    "name": "gruph-bin",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }, 
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug main",
+            "cargo": {
+                "args": [
+                    "run", 
+                    "./resources/trees.txt"
+                ],
+                "filter": {
+                    "name": "gruph-bin",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
