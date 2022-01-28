@@ -7,6 +7,7 @@ mod io_tests {
     use crate::stanford::*;
     use crate::process::text::build_tree;
 
+    use petgraph::algo::dijkstra;
 
     #[test]
     pub fn test_reading_trees_from_text_file() {
@@ -28,9 +29,33 @@ mod io_tests {
             let _line: String = _line.iter().collect();
             println!("{}", _line);
             let tree = build_tree(&_line[..], &'(', &')');
-            match tree {
-                Ok((t, hm)) => println!("Build tree w/ {} nodes", t.node_count()), 
+            let (tr, w2idx) = match tree {
+                Ok((t, hm)) => {
+                    println!("Build tree w/ {} nodes", t.node_count()); 
+                    (t, hm)},
                 Err(e) => panic!("Something went wrong while building tree")
+            };
+            let root = w2idx.get(&String::from("ROOT"));
+            let np = w2idx.get(&String::from("NP"));
+            match root {
+                Some(indices_root) => {
+                    match np {
+                        Some(indices_np) => {
+                           let head_root = indices_root[0];
+                           let dij = dijkstra(&tr, head_root, None, |_| 1.0);
+                           for (k,v) in dij {
+                               println!("{}", v);
+                           }
+                        }, 
+                        None => {
+                            println!("Did not encounter NP");
+                        }
+                        // todo c
+                    }
+                },
+                None => {
+                    println!("Root not found.")
+                }
             }
             // todo: test w/ dijkstra
         }
