@@ -6,17 +6,6 @@ mod process;
 mod query;
 mod io_tests;
 
-mod graph {
-    use petgraph::graph::{DiGraph, NodeIndex};
-    use std::collections::HashMap; 
-    struct MyDiGraph<N,E> {
-        graph: DiGraph<N,E>, 
-        weight2idxs: HashMap<N, Vec<NodeIndex>>
-    }
-
-    // todo extend build tree to return MyDiGraph, find better name, implement tests
-}
-
 /// From tree and to tree converters.
 #[allow(unused_imports)]
 pub mod stanford {
@@ -88,11 +77,11 @@ pub mod stanford {
         input = prettify_stanford_string(&input).into_iter().collect();
         let graph = build_tree(&input, &'(', &')');
         match graph {
-            Ok(g) => {
+            Ok((g, hm)) => {
                 println!("tree generated");
                 assert_eq!(g.node_count(), 22);
             }
-            Err(_) => panic!(),
+            Err(_) => panic!("Could not build stanford tree"),
         }
     }
 

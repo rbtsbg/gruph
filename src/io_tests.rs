@@ -29,7 +29,7 @@ mod io_tests {
             println!("{}", _line);
             let tree = build_tree(&_line[..], &'(', &')');
             match tree {
-                Ok(t) => println!("Build tree w/ {} nodes", t.node_count()), 
+                Ok((t, hm)) => println!("Build tree w/ {} nodes", t.node_count()), 
                 Err(e) => panic!("Something went wrong while building tree")
             }
             // todo: test w/ dijkstra

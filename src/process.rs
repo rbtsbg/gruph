@@ -1,4 +1,5 @@
 pub mod text {
+    use std::collections::HashMap;
     
     use std::usize;
     use petgraph::graph::DiGraph;
@@ -49,12 +50,13 @@ pub mod text {
         tree_in: &str,
         node_separator_start: &char,
         node_separator_end: &char,
-    ) -> Result<DiGraph<String, ()>, &'static str> {
+    ) -> Result<(DiGraph<String, ()>, HashMap<String, NodeIndex>), &'static str>{
         let mut res = DiGraph::<String, ()>::new(); // directed graph
         let mut indices_nodes: Vec<NodeIndex> = Vec::new();
         let mut index_char: usize = 0;
         let chars: Vec<char> = tree_in.chars().collect();
         let separators = [*node_separator_start, *node_separator_end, ' '];
+        let hm = HashMap::new();
         while index_char < tree_in.len() {
             let ch = chars[index_char];
             if ch == *node_separator_start {
@@ -73,7 +75,7 @@ pub mod text {
                     res.add_edge(source_node, target_node, ());
                     index_char = index_char + 1;
                 } else {
-                    return Ok(res);
+                    return Ok((res, hm));
                 }
             } else if ch.is_whitespace() {
                 continue;
@@ -82,7 +84,7 @@ pub mod text {
                 return Err("Malfomatted string.");
             }
         }
-        return Ok(res);
+        return Ok((res, hm));
     }
 
         
