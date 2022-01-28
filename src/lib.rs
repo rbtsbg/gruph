@@ -6,6 +6,16 @@ mod process;
 mod query;
 mod io_tests;
 
+mod graph {
+    use petgraph::graph::{DiGraph, NodeIndex};
+    use std::collections::HashMap; 
+    struct MyDiGraph<N,E> {
+        graph: DiGraph<N,E>, 
+        weight2idxs: HashMap<N, Vec<NodeIndex>>
+    }
+
+    // todo extend build tree to return MyDiGraph, find better name, implement tests
+}
 
 /// From tree and to tree converters.
 #[allow(unused_imports)]

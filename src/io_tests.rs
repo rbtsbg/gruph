@@ -32,6 +32,7 @@ mod io_tests {
                 Ok(t) => println!("Build tree w/ {} nodes", t.node_count()), 
                 Err(e) => panic!("Something went wrong while building tree")
             }
+            // todo: test w/ dijkstra
         }
     }
 }

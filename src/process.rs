@@ -1,7 +1,7 @@
 pub mod text {
     
     use std::usize;
-    use petgraph::graph::Graph;
+    use petgraph::graph::DiGraph;
     use petgraph::graph::NodeIndex;
     
     /// Gets the indices of the next node label in a stanford formatted string.
@@ -49,8 +49,8 @@ pub mod text {
         tree_in: &str,
         node_separator_start: &char,
         node_separator_end: &char,
-    ) -> Result<Graph<String, ()>, &'static str> {
-        let mut res = Graph::<String, ()>::new(); // directed graph
+    ) -> Result<DiGraph<String, ()>, &'static str> {
+        let mut res = DiGraph::<String, ()>::new(); // directed graph
         let mut indices_nodes: Vec<NodeIndex> = Vec::new();
         let mut index_char: usize = 0;
         let chars: Vec<char> = tree_in.chars().collect();
