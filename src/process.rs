@@ -47,7 +47,8 @@ pub mod text {
         tree_in: &str,
         node_separator_start: &char,
         node_separator_end: &char,
-    ) -> Result<(DiGraph<String, ()>, HashMap<String, Vec<NodeIndex>>), &'static str> {
+    ) -> Result<(DiGraph<String, ()>, 
+    HashMap<String, Vec<NodeIndex>>), &'static str> {
         let mut res = DiGraph::<String, ()>::new(); // directed graph
         let mut indices_nodes: Vec<NodeIndex> = Vec::new();
         let mut index_char: usize = 0;
