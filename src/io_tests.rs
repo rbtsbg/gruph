@@ -36,7 +36,7 @@ mod io_tests {
                 }
                 Err(e) => panic!("Something went wrong while building tree"),
             };
-            let start = &String::from("S");
+            let start = &String::from("man");
             let root = w2idx.get(start);
 
             match root {
@@ -53,7 +53,7 @@ mod io_tests {
                     }
                 }
                 None => {
-                    println!("Root not found.");
+                    println!("Start not found."); // todo: start implementing match function from here
                 }
             };
         }
