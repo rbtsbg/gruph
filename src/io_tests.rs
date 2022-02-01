@@ -2,12 +2,15 @@ mod io_tests {
 
     use crate::process::text::build_tree;
     use crate::stanford::*;
+    use std::collections::HashMap;
     use std::env;
     use std::fs::File;
     use std::io::{self, prelude::*, BufReader};
     use std::path::Path;
 
     use petgraph::algo::dijkstra;
+    use petgraph::graph::DiGraph;
+    use petgraph::graph::NodeIndex;
 
     #[test]
     pub fn test_reading_trees_from_text_file() {
@@ -57,5 +60,27 @@ mod io_tests {
                 }
             };
         }
+    }
+
+    pub fn dominates(
+        tree: DiGraph<String, ()>,
+        weight_to_index: HashMap<String, NodeIndex>,
+        parent: &String,
+        child: &String
+    ) -> bool {
+        let start = weight_to_index[parent];
+        let paths = dijkstra(&tree, start, None, |_| 1);
+        for (k, v) in paths {
+            let mut weight = tree.node_weight(k);
+            match weight {
+                Some(w) => {
+                    if w == child {
+                        return true
+                    }
+                },
+                None => continue
+            }
+        }
+        return false;
     }
 }
