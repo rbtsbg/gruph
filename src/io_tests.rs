@@ -36,7 +36,7 @@ mod io_tests {
                 }
                 Err(e) => panic!("Something went wrong while building tree"),
             };
-            let start = &String::from("ROOT");
+            let start = &String::from("S");
             let root = w2idx.get(start);
 
             match root {
@@ -49,7 +49,7 @@ mod io_tests {
                             Some(w) => w,
                             None => panic!("No weight found."),
                         };
-                        println!("{}: {}", weight, v);
+                        println!("{} -> {}: {}", start, weight, v);
                     }
                 }
                 None => {
