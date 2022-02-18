@@ -26,7 +26,7 @@ mod io_tests {
         for line in reader.lines() {
             let mut _line: String = match line {
                 Ok(l) => l,
-                Err(e) => panic!("Again something with reading a line."),
+                Err(e) => panic!("Something went wrong."),
             };
             let _line: Vec<char> = prettify_stanford_string(&_line[..]);
             let _line: String = _line.iter().collect();
@@ -39,8 +39,32 @@ mod io_tests {
                 }
                 Err(e) => panic!("Something went wrong while building tree"),
             };
-            let start = &String::from("man");
+            let start = &String::from("VP");
             let root = w2idx.get(start);
+
+            let vp_dom_np = dominates(&tr, &w2idx, &String::from("VP"), &String::from("NP"));
+            println!("VP dominates NP: {}", vp_dom_np);
+            
+            let np_dom_dt = dominates(&tr, &w2idx, &String::from("NP"), &String::from("DT"));
+            println!("NP dominates DT: {}", np_dom_dt);
+
+            let vp_dom_dt = dominates(&tr, &w2idx, &String::from("VP"), &String::from("DT"));
+            println!("VP dominates DT: {}", vp_dom_dt);
+            
+            let root_dom_vp = dominates(&tr, &w2idx, &String::from("ROOT"), &String::from("VP"));
+            println!("ROOT dominates VP: {}", root_dom_vp);
+            
+            let root_dom_np = dominates(&tr, &w2idx, &String::from("ROOT"), &String::from("NP"));
+            println!("ROOT dominates NP: {}", root_dom_np);
+            
+            let vp_dom_root = dominates(&tr, &w2idx, &String::from("VP"), &String::from("ROOT"));
+            println!("VP dominates ROOT: {}", vp_dom_root);
+            
+            let np_dom_root = dominates(&tr, &w2idx, &String::from("NP"), &String::from("ROOT"));
+            println!("NP dominates ROOT: {}", np_dom_root);
+
+
+
 
             match root {
                 Some(indices_root) => {
@@ -63,18 +87,18 @@ mod io_tests {
     }
 
     pub fn dominates(
-        tree: DiGraph<String, ()>,
-        weight_to_index: HashMap<String, NodeIndex>,
-        parent: &String,
-        child: &String
+        tree: &DiGraph<String, ()>,
+        weight_to_index: &HashMap<String, Vec::<NodeIndex>>,
+        dominator: &String,
+        dominated: &String
     ) -> bool {
-        let start = weight_to_index[parent];
-        let paths = dijkstra(&tree, start, None, |_| 1);
+        let mut start = weight_to_index[dominator][0];
+        let paths = dijkstra(tree, start, None, |_| 1);
         for (k, v) in paths {
             let mut weight = tree.node_weight(k);
             match weight {
                 Some(w) => {
-                    if w == child {
+                    if w == dominated {
                         return true
                     }
                 },
