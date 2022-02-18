@@ -1,7 +1,7 @@
 mod io_tests {
 
-    use crate::process::text::build_tree;
-    use crate::stanford::*;
+    use crate::core::text::build_tree;
+    use crate::stanford::stanford::*;
     use std::collections::HashMap;
     use std::env;
     use std::fs::File;
